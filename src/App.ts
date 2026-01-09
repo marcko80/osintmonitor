@@ -801,8 +801,14 @@ export class App {
 
   private async loadNewsCategory(category: string, feeds: typeof FEEDS.politics): Promise<NewsItem[]> {
     try {
-      const items = await fetchCategoryFeeds(feeds ?? []);
       const panel = this.newsPanels[category];
+      const items = await fetchCategoryFeeds(feeds ?? [], {
+        onBatch: (partialItems) => {
+          if (panel) {
+            panel.renderNews(partialItems);
+          }
+        },
+      });
 
       if (panel) {
         panel.renderNews(items);
@@ -873,19 +879,43 @@ export class App {
   private async loadMarkets(): Promise<void> {
     try {
       // Stocks
-      const stocks = await fetchMultipleStocks(MARKET_SYMBOLS);
+      const stocks = await fetchMultipleStocks(MARKET_SYMBOLS, {
+        onBatch: (partialStocks) => {
+          this.latestMarkets = partialStocks;
+          (this.panels['markets'] as MarketPanel).renderMarkets(partialStocks);
+        },
+      });
       this.latestMarkets = stocks;
       (this.panels['markets'] as MarketPanel).renderMarkets(stocks);
       this.statusPanel?.updateApi('Alpha Vantage', { status: 'ok' });
 
       // Sectors
-      const sectors = await fetchMultipleStocks(SECTORS.map((s) => ({ ...s, display: s.name })));
+      const sectors = await fetchMultipleStocks(
+        SECTORS.map((s) => ({ ...s, display: s.name })),
+        {
+          onBatch: (partialSectors) => {
+            (this.panels['heatmap'] as HeatmapPanel).renderHeatmap(
+              partialSectors.map((s) => ({ name: s.name, change: s.change }))
+            );
+          },
+        }
+      );
       (this.panels['heatmap'] as HeatmapPanel).renderHeatmap(
         sectors.map((s) => ({ name: s.name, change: s.change }))
       );
 
       // Commodities
-      const commodities = await fetchMultipleStocks(COMMODITIES);
+      const commodities = await fetchMultipleStocks(COMMODITIES, {
+        onBatch: (partialCommodities) => {
+          (this.panels['commodities'] as CommoditiesPanel).renderCommodities(
+            partialCommodities.map((c) => ({
+              display: c.display,
+              price: c.price,
+              change: c.change,
+            }))
+          );
+        },
+      });
       (this.panels['commodities'] as CommoditiesPanel).renderCommodities(
         commodities.map((c) => ({ display: c.display, price: c.price, change: c.change }))
       );

@@ -74,5 +74,14 @@ export function generateId(): string {
   return `id-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+export function chunkArray<T>(items: T[], size: number): T[][] {
+  const chunkSize = Math.max(1, size);
+  const chunks: T[][] = [];
+  for (let i = 0; i < items.length; i += chunkSize) {
+    chunks.push(items.slice(i, i + chunkSize));
+  }
+  return chunks;
+}
+
 export { proxyUrl, fetchWithProxy } from './proxy';
 export { exportToJSON, exportToCSV, ExportPanel } from './export';

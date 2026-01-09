@@ -1,6 +1,6 @@
 import type { Feed, NewsItem } from '@/types';
 import { ALERT_KEYWORDS } from '@/config';
-import { fetchWithProxy } from '@/utils';
+import { chunkArray, fetchWithProxy } from '@/utils';
 
 export async function fetchFeed(feed: Feed): Promise<NewsItem[]> {
   try {
@@ -43,11 +43,24 @@ export async function fetchFeed(feed: Feed): Promise<NewsItem[]> {
   }
 }
 
-export async function fetchCategoryFeeds(feeds: Feed[]): Promise<NewsItem[]> {
-  const results = await Promise.all(feeds.map(fetchFeed));
-  const items = results.flat();
+export async function fetchCategoryFeeds(
+  feeds: Feed[],
+  options: {
+    batchSize?: number;
+    onBatch?: (items: NewsItem[]) => void;
+  } = {}
+): Promise<NewsItem[]> {
+  const batchSize = options.batchSize ?? 5;
+  const batches = chunkArray(feeds, batchSize);
+  const items: NewsItem[] = [];
 
-  items.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+  for (const batch of batches) {
+    const results = await Promise.all(batch.map(fetchFeed));
+    items.push(...results.flat());
+
+    items.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+    options.onBatch?.(items.slice(0, 20));
+  }
 
   return items.slice(0, 20);
 }

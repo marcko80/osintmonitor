@@ -1,6 +1,6 @@
 import type { MarketData, CryptoData } from '@/types';
 import { API_URLS, CRYPTO_MAP } from '@/config';
-import { fetchWithProxy } from '@/utils';
+import { chunkArray, fetchWithProxy } from '@/utils';
 
 interface YahooFinanceResponse {
   chart: {
@@ -57,15 +57,32 @@ export async function fetchStockQuote(
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function fetchMultipleStocks(
-  symbols: Array<{ symbol: string; name: string; display: string }>
+  symbols: Array<{ symbol: string; name: string; display: string }>,
+  options: {
+    batchSize?: number;
+    delayMs?: number;
+    onBatch?: (results: MarketData[]) => void;
+  } = {}
 ): Promise<MarketData[]> {
   const results: MarketData[] = [];
-  // Sequential fetch with longer delay to avoid Yahoo 429 rate limiting
-  for (const s of symbols) {
-    const result = await fetchStockQuote(s.symbol, s.name, s.display);
-    results.push(result);
-    await delay(2500); // 2.5s delay between requests to avoid Yahoo 429
+  const batchSize = options.batchSize ?? 5;
+  const delayMs = options.delayMs ?? 2500;
+  const batches = chunkArray(symbols, batchSize);
+
+  for (const [index, batch] of batches.entries()) {
+    const batchResults = await Promise.all(
+      batch.map((s) => fetchStockQuote(s.symbol, s.name, s.display))
+    );
+    results.push(...batchResults);
+
+    const visibleResults = results.filter((r) => r.price !== null);
+    options.onBatch?.(visibleResults);
+
+    if (delayMs > 0 && index < batches.length - 1) {
+      await delay(delayMs);
+    }
   }
+
   return results.filter((r) => r.price !== null);
 }
 
