@@ -1,0 +1,313 @@
+/* =============================================================================
+   Social Panel Styles — OSINTmonitor
+   Matches existing dark theme and panel conventions.
+   ============================================================================= */
+
+/* Toolbar */
+.social-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-color, #2a2a3e);
+  gap: 8px;
+}
+
+.social-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.social-tab-btn {
+  background: transparent;
+  border: 1px solid var(--border-color, #2a2a3e);
+  color: var(--text-secondary, #8888aa);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.social-tab-btn:hover {
+  background: var(--bg-hover, #1e1e2e);
+  color: var(--text-primary, #e0e0f0);
+}
+
+.social-tab-btn.active {
+  background: var(--accent-color, #3b82f6);
+  color: #fff;
+  border-color: var(--accent-color, #3b82f6);
+}
+
+.social-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.social-action-btn {
+  background: transparent;
+  border: 1px solid var(--border-color, #2a2a3e);
+  color: var(--text-secondary, #8888aa);
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.social-action-btn:hover {
+  background: var(--bg-hover, #1e1e2e);
+  color: var(--text-primary, #e0e0f0);
+}
+
+/* Feed */
+.social-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  overflow-y: auto;
+}
+
+.social-msg-card {
+  background: var(--card-bg, #12121f);
+  border: 1px solid var(--border-color, #2a2a3e);
+  border-radius: 6px;
+  padding: 8px 10px;
+  transition: border-color 0.15s;
+}
+
+.social-msg-card:hover {
+  border-color: var(--accent-color, #3b82f6);
+}
+
+.social-msg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.social-msg-channel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-color, #3b82f6);
+}
+
+.social-msg-time {
+  font-size: 10px;
+  color: var(--text-muted, #666680);
+}
+
+.social-msg-body {
+  font-size: 12px;
+  color: var(--text-primary, #e0e0f0);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.social-msg-footer {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.social-asset-badge {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* Sources & Assets views */
+.social-add-form {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-color, #2a2a3e);
+}
+
+.social-form-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.social-input {
+  background: var(--input-bg, #0d0d1a);
+  border: 1px solid var(--border-color, #2a2a3e);
+  color: var(--text-primary, #e0e0f0);
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.social-input:focus {
+  border-color: var(--accent-color, #3b82f6);
+  outline: none;
+}
+
+.social-color-input {
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-color, #2a2a3e);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.social-add-btn {
+  background: var(--accent-color, #3b82f6);
+  color: #fff;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.social-add-btn:hover {
+  opacity: 0.85;
+}
+
+/* Source cards */
+.social-source-list,
+.social-asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+}
+
+.social-source-card,
+.social-asset-card {
+  background: var(--card-bg, #12121f);
+  border: 1px solid var(--border-color, #2a2a3e);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.social-source-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.social-status-dot.active { background: #22c55e; }
+.social-status-dot.paused { background: #eab308; }
+.social-status-dot.error { background: #ef4444; }
+.social-status-dot.pending { background: #6b7280; }
+
+.social-source-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0f0);
+}
+
+.social-source-channel {
+  font-size: 10px;
+  color: var(--text-muted, #666680);
+}
+
+.social-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #666680);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+
+.social-delete-btn:hover {
+  background: #ef444420;
+  color: #ef4444;
+}
+
+/* Asset cards */
+.social-asset-card {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.social-asset-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.social-asset-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary, #e0e0f0);
+  flex: 1;
+}
+
+.social-asset-mode {
+  font-size: 9px;
+  color: var(--text-muted, #666680);
+}
+
+.social-keyword-list {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.social-keyword-chip {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: var(--bg-hover, #1e1e2e);
+  color: var(--text-secondary, #8888aa);
+  border: 1px solid var(--border-color, #2a2a3e);
+}
+
+.social-keyword-chip.exclude {
+  background: #ef444415;
+  color: #ef4444;
+  border-color: #ef444440;
+}
+
+/* Empty state */
+.social-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-muted, #666680);
+}
+
+.social-empty p {
+  margin: 4px 0;
+}
+
+.social-hint {
+  font-size: 11px;
+}
