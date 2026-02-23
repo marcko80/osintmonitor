@@ -45,6 +45,7 @@ const FULL_PANELS: Record<string, PanelConfig> = {
   displacement: { name: 'UNHCR Displacement', enabled: true, priority: 2 },
   climate: { name: 'Climate Anomalies', enabled: true, priority: 2 },
   'population-exposure': { name: 'Population Exposure', enabled: true, priority: 2 },
+    social: { name: 'Social Monitor', enabled: true, priority: 2 },
 };
 
 const FULL_MAP_LAYERS: MapLayers = {
@@ -167,6 +168,7 @@ const TECH_PANELS: Record<string, PanelConfig> = {
   'etf-flows': { name: 'BTC ETF Tracker', enabled: true, priority: 2 },
   stablecoins: { name: 'Stablecoins', enabled: true, priority: 2 },
   monitors: { name: 'My Monitors', enabled: true, priority: 2 },
+    social: { name: 'Social Monitor', enabled: true, priority: 2 },
 };
 
 const TECH_MAP_LAYERS: MapLayers = {
