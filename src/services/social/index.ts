@@ -285,6 +285,7 @@ export function generateMockMessages(count = 10): SocialMessage[] {
   for (let i = 0; i < count; i++) {
     const channel = MOCK_CHANNELS[Math.floor(Math.random() * MOCK_CHANNELS.length)];
     const text = MOCK_TEXTS[Math.floor(Math.random() * MOCK_TEXTS.length)];
+        if (!channel || !text) continue;
     const minutesAgo = Math.floor(Math.random() * 120);
     messages.push({
       id: generateId(),
