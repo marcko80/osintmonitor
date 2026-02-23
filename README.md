@@ -45,7 +45,8 @@
 | Web-only dashboards                | **Native desktop app** (Tauri) for macOS, Windows, and Linux + installable PWA with offline map support    |
 | Flat 2D maps                       | **3D WebGL globe** with deck.gl rendering and 35+ toggleable data layers                                   |
 | Siloed financial data              | **Finance variant** with 92 stock exchanges, 19 financial centers, 13 central banks, and Gulf FDI tracking |
-| Undocumented, fragile APIs         | **Proto-first API contracts** — 17 typed services with auto-generated clients, servers, and OpenAPI docs   |
+| Undocumented, fragile APIs         | **Proto-first API contracts** — 17 typed services with auto-generated clients, servers, and OpenAPI 
+| No social media intelligence   | **Social Monitor variant** with real-time social media monitoring, keyword tracking, and platform analytics |
 
 ---
 
@@ -56,8 +57,9 @@
 | **OSINT Monitor**   | [osintmonitor.app](https://osintmonitor.app)                 | Geopolitics, military, conflicts, infrastructure |
 | **Tech Monitor**    | [tech.osintmonitor.app](https://tech.osintmonitor.app)       | Startups, AI/ML, cloud, cybersecurity            |
 | **Finance Monitor** | [finance.osintmonitor.app](https://finance.osintmonitor.app) | Global markets, trading, central banks, Gulf FDI |
+| **Social Monitor** | [social.osintmonitor.app](https://social.osintmonitor.app) | Social media monitoring, keyword tracking, platform analytics |
 
-All three variants run from a single codebase — switch between them with one click via the header bar (🌍 WORLD | 💻 TECH | 📈 FINANCE).
+All four variants run from a single codebase — switch between them with one click via the header bar (🌍 WORLD | 💻 TECH | 📈 FINANCE | 📱 SOCIAL).
 
 ---
 
@@ -184,6 +186,15 @@ All three variants run from a single codebase — switch between them with one c
 ### Signal Aggregation & Anomaly Detection
 
 - **Multi-source signal fusion** — internet outages, military flights, naval vessels, protests, AIS disruptions, satellite fires, and keyword spikes are aggregated into a unified intelligence picture with per-country and per-region clustering
+
+### Social Media Monitoring
+
+- **Real-time social feed aggregation** — monitors multiple social media platforms and aggregates posts, mentions, and trends into a unified social intelligence panel. Configurable keyword filters with word-boundary matching enable precise tracking of topics, brands, organizations, and threat actors across platforms
+- **Keyword-based alert system** — user-defined keyword monitors with automatic color-coding from a 10-color palette. Monitors search across social post content and metadata, showing real-time match counts and temporal trends
+- **Platform health dashboard** — tracks platform availability, API status, and rate limit health across monitored social media services. Displays uptime metrics and alerts when platforms experience degraded performance
+- **Social activity timeline** — chronological feed of social media activity with filtering by platform, keyword, sentiment, and engagement metrics. Supports both grid and list view modes
+- **CRUD operations for monitors** — full create, read, update, delete lifecycle for social monitoring configurations. Each monitor tracks platform, keywords, collection intervals, and status (active/paused/error)
+- **Mock data generation** — built-in mock data service for development and demonstration, generating realistic social media posts with platform-appropriate metadata, engagement metrics, and temporal distribution
 - **Temporal baseline anomaly detection** — Welford's online algorithm computes streaming mean/variance per event type, region, weekday, and month over a 90-day window. Z-score thresholds (1.5/2.0/3.0) flag deviations like "Military flights 3.2x normal for Thursday (January)" — stored in Redis via Upstash
 - **Regional convergence scoring** — when multiple signal types spike in the same geographic area, the system identifies convergence zones and escalates severity
 
@@ -900,9 +911,9 @@ This is an approximation, not a substitute for official flow data, but it captur
 
 ---
 
-## Tri-Variant Architecture
+## Quad-Variant Architecture
 
-A single codebase produces three specialized dashboards, each with distinct feeds, panels, map layers, and branding:
+A single codebase produces four specialized dashboards, each with distinct feeds, panels, map layers, and branding:
 
 | Aspect                | OSINT Monitor                                        | Tech Monitor                                    | Finance Monitor                                  |
 | --------------------- | ---------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------ |
@@ -913,9 +924,20 @@ A single codebase produces three specialized dashboards, each with distinct feed
 | **Unique Map Layers** | Military bases, nuclear facilities, hotspots         | Tech HQs, cloud regions, startup hubs           | Stock exchanges, central banks, Gulf investments |
 | **Desktop App**       | OSINT Monitor.app / .exe / .AppImage                 | Tech Monitor.app / .exe / .AppImage             | Finance Monitor.app / .exe / .AppImage           |
 
+The **Social Monitor** variant extends the platform with social media intelligence:
+
+| Aspect | Social Monitor |
+| --------------------- | ------------------------------------------------ |
+| **Domain** | social.osintmonitor.app |
+| **Focus** | Social media monitoring, keyword tracking, platform analytics |
+| **RSS Feeds** | ~15 categories (social platforms, influencer tracking, viral content) |
+| **Panels** | Social activity feed, keyword monitors, platform health, engagement metrics |
+| **Unique Map Layers** | Social media hotspots, trending geo-locations |
+| **Desktop App** | Social Monitor.app / .exe / .AppImage |
+
 **Build-time selection** — the `VITE_VARIANT` environment variable controls which configuration is bundled. A Vite HTML plugin transforms meta tags, Open Graph data, PWA manifest, and JSON-LD structured data at build time. Each variant tree-shakes unused data files — the finance build excludes military base coordinates and APT group data, while the geopolitical build excludes stock exchange listings.
 
-**Runtime switching** — a variant selector in the header bar (🌍 WORLD | 💻 TECH | 📈 FINANCE) navigates between deployed domains on the web, or sets `localStorage['osintmonitor-variant']` in the desktop app to switch without rebuilding.
+**Runtime switching** — a variant selector in the header bar (🌍 WORLD | 💻 TECH | 📈 FINANCE | 📱 SOCIAL) navigates between deployed domains on the web, or sets `localStorage['osintmonitor-variant']` in the desktop app to switch without rebuilding.
 
 ---
 
@@ -935,7 +957,7 @@ A single codebase produces three specialized dashboards, each with distinct feed
 | **Bandwidth efficiency**            | Gzip compression on all relay responses (80% reduction). Content-hash static assets with 1-year immutable cache. Staggered polling intervals prevent synchronized API storms. Animations and polling pause on hidden tabs.                                                                                                                |
 | **Baseline-aware alerting**         | Trending keyword detection uses rolling 2-hour windows against 7-day baselines with per-term spike multipliers, cooldowns, and source diversity requirements — surfacing genuine surges while suppressing noise.                                                                                                                          |
 | **Contract-first APIs**             | Every API endpoint starts as a `.proto` definition with field validation, HTTP annotations, and examples. Code generation produces typed TypeScript clients and servers, eliminating schema drift. Breaking changes are caught automatically at CI time.                                                                                 |
-| **Run anywhere**                    | Same codebase produces three specialized variants (geopolitical, tech, finance) and deploys to Vercel (web), Railway (relay), Tauri (desktop), and PWA (installable). Desktop sidecar mirrors all cloud API handlers locally. Service worker caches map tiles for offline use while keeping intelligence data always-fresh (NetworkOnly). |
+| **Run anywhere**                    | Same codebase produces four specialized variants (geopolitical, tech, finance, social) and deploys to Vercel (web), Railway (relay), Tauri (desktop), and PWA (installable). Desktop sidecar mirrors all cloud API handlers locally. Service worker caches map tiles for offline use while keeping intelligence data always-fresh (NetworkOnly). |
 
 ---
 
@@ -972,7 +994,7 @@ All edge functions include circuit breaker logic and return cached stale data wh
 
 ## Multi-Platform Architecture
 
-All three variants run on three platforms that work together:
+All four variants run on three platforms that work together:
 
 ```
 ┌─────────────────────────────────────┐
@@ -1348,11 +1370,13 @@ Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed gui
 npm run dev          # Full variant (osintmonitor.app)
 npm run dev:tech     # Tech variant (tech.osintmonitor.app)
 npm run dev:finance  # Finance variant (finance.osintmonitor.app)
+npm run dev:social    # Social variant (social.osintmonitor.app)
 
 # Production builds
 npm run build:full      # Build full variant
 npm run build:tech      # Build tech variant
 npm run build:finance   # Build finance variant
+npm run build:social   # Build social variant
 
 # Quality
 npm run typecheck    # TypeScript type checking
@@ -1361,9 +1385,11 @@ npm run typecheck    # TypeScript type checking
 npm run desktop:package:macos:full      # .app + .dmg (OSINT Monitor)
 npm run desktop:package:macos:tech      # .app + .dmg (Tech Monitor)
 npm run desktop:package:macos:finance   # .app + .dmg (Finance Monitor)
+npm run desktop:package:macos:social   # .app + .dmg (Social Monitor)
 npm run desktop:package:windows:full    # .exe + .msi (OSINT Monitor)
 npm run desktop:package:windows:tech    # .exe + .msi (Tech Monitor)
 npm run desktop:package:windows:finance # .exe + .msi (Finance Monitor)
+npm run desktop:package:windows:social # .exe + .msi (Social Monitor)
 
 # Generic packaging runner
 npm run desktop:package -- --os macos --variant full
@@ -1382,7 +1408,7 @@ Desktop release details, signing hooks, variant outputs, and clean-machine valid
 ## Roadmap
 
 - [x] 60+ API edge functions for programmatic access
-- [x] Tri-variant system (geopolitical + tech + finance)
+- [x] Quad-Variant system (geopolitical + tech + finance + social)
 - [x] Market intelligence (macro signals, ETF flows, stablecoin peg monitoring)
 - [x] Railway relay for WebSocket and blocked-domain proxying
 - [x] CORS origin allowlist and security hardening
@@ -1447,6 +1473,7 @@ Desktop release details, signing hooks, variant outputs, and clean-machine valid
 - [x] Dedup coordinate precision increased to 0.1° (~10km) for finer-grained event matching
 - [x] Community guidelines (CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md)
 - [x] Yahoo Finance staggered request batching to prevent 429 rate limiting
+- [x] Social Monitor variant with real-time social media monitoring, keyword tracking, and platform analytics
 - [x] Panel base class retry indicator (`showRetrying`) for visual feedback during data refresh
 - [ ] Mobile-optimized views
 - [ ] Push notifications for critical alerts
