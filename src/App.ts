@@ -1841,25 +1841,7 @@ export class App {
               <span class="variant-icon">🌍</span>
               <span class="variant-label">${t('header.world')}</span>
             </a>
-            <span class="variant-divider"></span>
-            <a href="${this.isDesktopApp ? '#' : (SITE_VARIANT === 'tech' ? '#' : 'https://tech.worldmonitor.app')}"
-               class="variant-option ${SITE_VARIANT === 'tech' ? 'active' : ''}"
-               data-variant="tech"
-               ${!this.isDesktopApp && SITE_VARIANT !== 'tech' ? 'target="_blank" rel="noopener"' : ''}
-               title="${t('header.tech')}${SITE_VARIANT === 'tech' ? ` ${t('common.currentVariant')}` : ''}">
-              <span class="variant-icon">💻</span>
-              <span class="variant-label">${t('header.tech')}</span>
-            </a>
-            <span class="variant-divider"></span>
-            <a href="${this.isDesktopApp ? '#' : (SITE_VARIANT === 'finance' ? '#' : 'https://finance.worldmonitor.app')}"
-               class="variant-option ${SITE_VARIANT === 'finance' ? 'active' : ''}"
-               data-variant="finance"
-               ${!this.isDesktopApp && SITE_VARIANT !== 'finance' ? 'target="_blank" rel="noopener"' : ''}
-               title="${t('header.finance')}${SITE_VARIANT === 'finance' ? ` ${t('common.currentVariant')}` : ''}">
-              <span class="variant-icon">📈</span>
-              <span class="variant-label">${t('header.finance')}</span>
-            </a>
-          </div>
+            div>
           <span class="logo">MONITOR</span><span class="version">v${__APP_VERSION__}</span>${BETA_MODE ? '<span class="beta-badge">BETA</span>' : ''}
           <a href="https://x.com/eliehabib" target="_blank" rel="noopener" class="credit-link">
             <svg class="x-logo" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -1923,6 +1905,27 @@ export class App {
             <button class="modal-close" id="modalClose">×</button>
           </div>
           <div class="panel-toggle-grid" id="panelToggles"></div>
+                      <div class="settings-keywords-section">
+              <h3 class="settings-section-title">🔍 Keywords Monitor</h3>
+              <p class="settings-section-desc">Add keywords to track across all intelligence feeds. Matches will appear highlighted in the news panels.</p>
+              <div class="keywords-input-row">
+                <input type="text" id="keywordInput" class="keyword-input" placeholder="Enter keyword (e.g. cyber attack, NATO, supply chain)" />
+                <button id="addKeywordBtn" class="keyword-add-btn">+ Add</button>
+              </div>
+              <div class="keywords-tags" id="keywordTags"></div>
+              <div class="keywords-presets">
+                <span class="preset-label">Quick add:</span>
+                <button class="keyword-preset" data-kw="cyber">Cyber</button>
+                <button class="keyword-preset" data-kw="drone">Drone</button>
+                <button class="keyword-preset" data-kw="sanctions">Sanctions</button>
+                <button class="keyword-preset" data-kw="critical infrastructure">Infrastructure</button>
+                <button class="keyword-preset" data-kw="ransomware">Ransomware</button>
+                <button class="keyword-preset" data-kw="energy">Energy</button>
+                <button class="keyword-preset" data-kw="AI">AI</button>
+                <button class="keyword-preset" data-kw="election">Election</button>
+              </div>
+            </div>
+            <h3 class="settings-section-title">⚙️ Panel Visibility</h3>
         </div>
       </div>
       <div class="modal-overlay" id="sourcesModal">
@@ -2645,6 +2648,7 @@ export class App {
     // Settings modal
     document.getElementById('settingsBtn')?.addEventListener('click', () => {
       document.getElementById('settingsModal')?.classList.add('active');
+              this.renderKeywordTags();
     });
 
     document.getElementById('modalClose')?.addEventListener('click', () => {
@@ -2656,6 +2660,9 @@ export class App {
         document.getElementById('settingsModal')?.classList.remove('active');
       }
     });
+
+        // Keywords management
+    this.setupKeywordHandlers();
 
 
     // Header theme toggle button
@@ -2925,6 +2932,68 @@ export class App {
       const nowPinned = mapSection.classList.toggle('pinned');
       pinBtn.classList.toggle('active', nowPinned);
       localStorage.setItem('map-pinned', String(nowPinned));
+    });
+  }
+
+
+    private getKeywords(): string[] {
+    try { return JSON.parse(localStorage.getItem('osint-keywords') || '[]'); } catch { return []; }
+  }
+
+  private saveKeywords(kws: string[]): void {
+    localStorage.setItem('osint-keywords', JSON.stringify(kws));
+    // Update monitors with new keywords
+    this.monitors = kws.map(kw => ({ keyword: kw, active: true }));
+    saveToStorage(STORAGE_KEYS.monitors, this.monitors);
+    this.updateMonitorResults();
+  }
+
+  private renderKeywordTags(): void {
+    const container = document.getElementById('keywordTags');
+    if (!container) return;
+    const kws = this.getKeywords();
+    container.innerHTML = kws.length === 0
+      ? '<span class="no-keywords">No keywords configured yet. Add some above or use the quick-add buttons.</span>'
+      : kws.map(kw => `<span class="keyword-tag">${escapeHtml(kw)}<button class="keyword-remove" data-kw="${escapeHtml(kw)}">&times;</button></span>`).join('');
+    container.querySelectorAll('.keyword-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const keyword = (btn as HTMLElement).dataset.kw!;
+        const updated = this.getKeywords().filter(k => k !== keyword);
+        this.saveKeywords(updated);
+        this.renderKeywordTags();
+      });
+    });
+  }
+
+  private setupKeywordHandlers(): void {
+    const addKeyword = () => {
+      const input = document.getElementById('keywordInput') as HTMLInputElement;
+      if (!input) return;
+      const kw = input.value.trim();
+      if (!kw) return;
+      const existing = this.getKeywords();
+      if (!existing.includes(kw.toLowerCase())) {
+        existing.push(kw.toLowerCase());
+        this.saveKeywords(existing);
+        this.renderKeywordTags();
+      }
+      input.value = '';
+    };
+    document.getElementById('addKeywordBtn')?.addEventListener('click', addKeyword);
+    document.getElementById('keywordInput')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addKeyword();
+    });
+    document.querySelectorAll('.keyword-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kw = (btn as HTMLElement).dataset.kw?.toLowerCase();
+        if (!kw) return;
+        const existing = this.getKeywords();
+        if (!existing.includes(kw)) {
+          existing.push(kw);
+          this.saveKeywords(existing);
+          this.renderKeywordTags();
+        }
+      });
     });
   }
 
