@@ -39,3 +39,5 @@ export * from './PopulationExposurePanel';
 export * from './InvestmentsPanel';
 export * from './LanguageSelector';
 export * from './SocialPanel';
+
+export { SocialPulsePanel } from './SocialPulsePanel';
