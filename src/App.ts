@@ -81,6 +81,7 @@ import {
   InvestmentsPanel,
   LanguageSelector,
     SocialPanel,
+  SocialPulsePanel,
 } from '@/components';
 import type { SearchResult } from '@/components/SearchModal';
 import { collectStoryData } from '@/services/story-data';
@@ -2376,6 +2377,10 @@ export class App {
     const socialPanel = new SocialPanel();
     this.panels['social'] = socialPanel;
 
+    // Social Pulse Panel
+    const socialPulsePanel = new SocialPulsePanel();
+    this.panels['social-pulse'] = socialPulsePanel;
+
     // Add panels to grid in saved order
     // Use DEFAULT_PANELS keys for variant-aware panel order
     const defaultOrder = Object.keys(DEFAULT_PANELS).filter(k => k !== 'map');
@@ -3229,6 +3234,7 @@ export class App {
 
         // Initialize Social Monitor Panel
     (this.panels['social'] as SocialPanel)?.init();
+    (this.panels['social-pulse'] as SocialPulsePanel)?.init();
   }
 
   private async loadDataForLayer(layer: keyof MapLayers): Promise<void> {

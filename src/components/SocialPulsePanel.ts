@@ -2,7 +2,7 @@ import { Panel } from "./Panel";
 import { h, replaceChildren } from "../utils/dom-utils";
 import { getAssets } from "@/services/social";
 import { computePulseTimeseries, loadPulseState, savePulseState, getSignals } from "@/services/social-pulse";
-import type { PulseTimeframe, PulseBucket, PulseBucketData, PulseTimeseriesResponse, SocialSignal } from "@/types/social-pulse";
+import type { PulseTimeframe, PulseBucket, PulseTimeseriesResponse, SocialSignal } from "@/types/social-pulse";
 import type { SocialAsset } from "@/types/social";
 
 export class SocialPulsePanel extends Panel {
@@ -42,7 +42,7 @@ export class SocialPulsePanel extends Panel {
       refreshBtn.addEventListener("click", () => this.refresh());
       body = h("div", { className: "sp-empty" }, h("p", {}, "No data yet for this asset."), refreshBtn);
     } else {
-      body = h("div", { className: "sp-body" }, this.buildWaveform(this.data), this.buildSummary(this.data), this.buildSignals());
+      body = h("div", { className: "sp-body" }, this.buildWaveform(this.data!), this.buildSummary(this.data!), this.buildSignals());
     }
     replaceChildren(this.content, toolbar, body);
   }
@@ -126,8 +126,9 @@ export class SocialPulsePanel extends Panel {
   }
 
   private buildSignals(): HTMLElement {
+    const sigs = getSignals();
     if (sigs.length === 0) return h("div", {});
-    const items = sigs.map(s => {
+    const items = sigs.map((s: SocialSignal) => {
       const cls = "sp-signal sp-signal-" + s.severity;
       return h("div", { className: cls }, h("span", { className: "sp-signal-icon" }, "⚡"), h("span", { className: "sp-signal-msg" }, s.message));
     });

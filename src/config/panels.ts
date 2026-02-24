@@ -46,6 +46,7 @@ const FULL_PANELS: Record<string, PanelConfig> = {
   climate: { name: 'Climate Anomalies', enabled: true, priority: 2 },
   'population-exposure': { name: 'Population Exposure', enabled: true, priority: 2 },
     social: { name: 'Social Monitor', enabled: true, priority: 2 },
+  'social-pulse': { name: 'Social Pulse', enabled: true, priority: 2 },
 };
 
 const FULL_MAP_LAYERS: MapLayers = {
@@ -169,6 +170,7 @@ const TECH_PANELS: Record<string, PanelConfig> = {
   stablecoins: { name: 'Stablecoins', enabled: true, priority: 2 },
   monitors: { name: 'My Monitors', enabled: true, priority: 2 },
     social: { name: 'Social Monitor', enabled: true, priority: 2 },
+  'social-pulse': { name: 'Social Pulse', enabled: true, priority: 2 },
 };
 
 const TECH_MAP_LAYERS: MapLayers = {
@@ -287,6 +289,7 @@ const FINANCE_PANELS: Record<string, PanelConfig> = {
   polymarket: { name: 'Predictions', enabled: true, priority: 2 },
   monitors: { name: 'My Monitors', enabled: true, priority: 2 },
     social: { name: 'Social Monitor', enabled: true, priority: 2 },
+  'social-pulse': { name: 'Social Pulse', enabled: true, priority: 2 },
 };
 
 const FINANCE_MAP_LAYERS: MapLayers = {
