@@ -1,3 +1,4 @@
+@import './social-pulse.css';
 @import './lang-switcher.css';
 @import './rtl-overrides.css';
 @import './panels.css';
@@ -14435,4 +14436,3 @@ body.has-critical-banner .panels-grid {
     grid-row: unset !important;
   }
 }
-@import './social-pulse.css';
